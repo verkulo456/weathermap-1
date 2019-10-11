@@ -29,7 +29,7 @@ public class TestCurrentweatherdata {
     public void testMockData() throws Exception {
         System.out.println("unit test for the weather mock data");
 
-        ClassPathResource resource = new ClassPathResource("mock/weather.json");
+        ClassPathResource resource = new ClassPathResource("mock/weather_shenzhen.json");
         InputStream inputStream = resource.getInputStream();
         String data = new BufferedReader(new InputStreamReader(inputStream)).lines().collect(Collectors.joining(System.lineSeparator()));
         ObjectMapper mapper = new ObjectMapper();

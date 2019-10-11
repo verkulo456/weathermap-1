@@ -54,7 +54,7 @@ public class OpenWeatherMapClient {
     static {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            ClassPathResource resource = new ClassPathResource("mock/weather.json");
+            ClassPathResource resource = new ClassPathResource("mock/weather_shenzhen.json");
             InputStream inputStream = resource.getInputStream();
             String data = new BufferedReader(new InputStreamReader(inputStream)).lines().collect(Collectors.joining(System.lineSeparator()));
             MOCK_WEATHER_DATA = mapper.readValue(data, WeatherData.class);
@@ -63,7 +63,7 @@ public class OpenWeatherMapClient {
         }
 
         try {
-            ClassPathResource resource = new ClassPathResource("mock/uvi.json");
+            ClassPathResource resource = new ClassPathResource("mock/uvi_shenzhen.json");
             InputStream inputStream = resource.getInputStream();
             String data = new BufferedReader(new InputStreamReader(inputStream)).lines().collect(Collectors.joining(System.lineSeparator()));
             MOCK_ULTRAVIOLET_INDEX = mapper.readValue(data, UltravioletIndex.class);
@@ -89,6 +89,14 @@ public class OpenWeatherMapClient {
             WeatherData weatherData = null;
             if (mockEnabled) {
                 weatherData = MOCK_WEATHER_DATA;
+                if (city.equalsIgnoreCase("chengdu") ||
+                        city.equalsIgnoreCase("beijing")) {
+                    ClassPathResource resource = new ClassPathResource("mock/weather_" + city.toLowerCase() + ".json");
+                    InputStream inputStream = resource.getInputStream();
+                    String data = new BufferedReader(new InputStreamReader(inputStream)).lines().collect(Collectors.joining(System.lineSeparator()));
+                    ObjectMapper mapper = new ObjectMapper();
+                    weatherData = mapper.readValue(data, WeatherData.class);
+                }
 
                 summary.setCityName(city);
                 summary.setCountry(weatherData.getSys().getCountry());
@@ -137,6 +145,14 @@ public class OpenWeatherMapClient {
             UltravioletIndex ultravioletIndex = null;
             if (mockEnabled) {
                 ultravioletIndex = MOCK_ULTRAVIOLET_INDEX;
+                if (city.equalsIgnoreCase("chengdu") ||
+                        city.equalsIgnoreCase("beijing")) {
+                    ClassPathResource resource = new ClassPathResource("mock/uvi_" + city.toLowerCase() + ".json");
+                    InputStream inputStream = resource.getInputStream();
+                    String data = new BufferedReader(new InputStreamReader(inputStream)).lines().collect(Collectors.joining(System.lineSeparator()));
+                    ObjectMapper mapper = new ObjectMapper();
+                    ultravioletIndex = mapper.readValue(data, UltravioletIndex.class);
+                }
 
                 summary.setUviDate(ultravioletIndex.getDate());
                 summary.setUviDateISO(ultravioletIndex.getDateIso());

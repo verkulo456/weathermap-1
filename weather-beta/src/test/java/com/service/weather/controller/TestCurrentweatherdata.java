@@ -30,7 +30,7 @@ public class TestCurrentweatherdata {
     public void testMockData() throws Exception {
         System.out.println("unit test for the weather mock data");
 
-        ClassPathResource resource = new ClassPathResource("mock/weather.json");
+        ClassPathResource resource = new ClassPathResource("mock/weather_shenzhen.json");
         InputStream inputStream = resource.getInputStream();
         String data = new BufferedReader(new InputStreamReader(inputStream)).lines().collect(Collectors.joining(System.lineSeparator()));
         ObjectMapper mapper = new ObjectMapper();
@@ -43,7 +43,7 @@ public class TestCurrentweatherdata {
     public void testMockData2() throws Exception {
         System.out.println("unit test for the uvi mock data");
 
-        ClassPathResource resource = new ClassPathResource("mock/uvi.json");
+        ClassPathResource resource = new ClassPathResource("mock/uvi_shenzhen.json");
         InputStream inputStream = resource.getInputStream();
         String data = new BufferedReader(new InputStreamReader(inputStream)).lines().collect(Collectors.joining(System.lineSeparator()));
         ObjectMapper mapper = new ObjectMapper();

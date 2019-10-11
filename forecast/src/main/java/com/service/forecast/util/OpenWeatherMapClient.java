@@ -49,7 +49,7 @@ public class OpenWeatherMapClient {
 
     static {
         try {
-            ClassPathResource resource = new ClassPathResource("mock/forecast.json");
+            ClassPathResource resource = new ClassPathResource("mock/forecast_shenzhen.json");
             InputStream inputStream = resource.getInputStream();
             String data = new BufferedReader(new InputStreamReader(inputStream)).lines().collect(Collectors.joining(System.lineSeparator()));
             ObjectMapper mapper = new ObjectMapper();
@@ -76,6 +76,14 @@ public class OpenWeatherMapClient {
             ForecastData forecastData = null;
             if (mockEnabled) {
                 forecastData = MOCK_FORECAST_DATA;
+                if (city.equalsIgnoreCase("chengdu")
+                        || city.equalsIgnoreCase("beijing")) {
+                    ClassPathResource resource = new ClassPathResource("mock/forecast_" + city.toLowerCase() + ".json");
+                    InputStream inputStream = resource.getInputStream();
+                    String data = new BufferedReader(new InputStreamReader(inputStream)).lines().collect(Collectors.joining(System.lineSeparator()));
+                    ObjectMapper mapper = new ObjectMapper();
+                    forecastData = mapper.readValue(data, ForecastData.class);
+                }
                 LOGGER.info("using mock data, end showForecastWeather from openweather cost " + (System.currentTimeMillis() - l));
                 summary.setCityName(city);
                 summary.setCountry(forecastData.getCity().getCountry());
