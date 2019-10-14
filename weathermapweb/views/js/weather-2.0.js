@@ -415,7 +415,7 @@
                             case '13n':
                             case '50d':
                             case '50n':
-                                m = 'pic5';break;
+                                m = 'pic1';break;
                             case '01n':
                             case '02n':
                             case '04d':
