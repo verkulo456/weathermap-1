@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestClientException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -87,6 +88,14 @@ public class OpenWeatherMapClient {
         CurrentWeatherSummary summary = new CurrentWeatherSummary();
         try {
             WeatherData weatherData = null;
+            if (!mockEnabled) {
+                try {
+                    weatherData = restTemplate
+                            .getForObject(String.format(WEATHER_URL_HTTP, APP_KEY, city), WeatherData.class);
+                } catch (RestClientException e) {
+                    mockEnabled = true;
+                }
+            }
             if (mockEnabled) {
                 weatherData = MOCK_WEATHER_DATA;
                 if (city.equalsIgnoreCase("chengdu") ||
@@ -114,9 +123,6 @@ public class OpenWeatherMapClient {
                 summary.setCoordinatesLon(weatherData.getCoord().getLon());
                 summary.setCoordinatesLat(weatherData.getCoord().getLat());
             } else {
-                weatherData = restTemplate
-                        .getForObject(String.format(WEATHER_URL_HTTP, APP_KEY, city), WeatherData.class);
-
                 summary.setCityName(weatherData.getName());
                 summary.setCountry(weatherData.getSys().getCountry());
                 summary.setTemperature(weatherData.getMain().getTemp());

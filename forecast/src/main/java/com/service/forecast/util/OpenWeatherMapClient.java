@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestClientException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -74,6 +75,14 @@ public class OpenWeatherMapClient {
         ForecastSummary summary = new ForecastSummary();
         try {
             ForecastData forecastData = null;
+            if (!mockEnabled) {
+                try {
+                    forecastData = restTemplate.getForObject(String.format(URL, APP_KEY, city),
+                            ForecastData.class);
+                } catch (RestClientException e) {
+                    mockEnabled = true;
+                }
+            }
             if (mockEnabled) {
                 forecastData = MOCK_FORECAST_DATA;
                 if (city.equalsIgnoreCase("chengdu")
@@ -95,8 +104,6 @@ public class OpenWeatherMapClient {
                 }
                 summary.setDateList(dateListItemList);
             } else {
-                forecastData = restTemplate.getForObject(String.format(URL, APP_KEY, city),
-                        ForecastData.class);
                 LOGGER.info("end showForecastWeather from openweather cost " + (System.currentTimeMillis() - l));
                 summary.setCityName(forecastData.getCity().getName());
                 summary.setCountry(forecastData.getCity().getCountry());
